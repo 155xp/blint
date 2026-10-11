@@ -6,8 +6,12 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
+
+	"github.com/charmbracelet/lipgloss"
+	"github.com/muesli/termenv"
 )
 
 func TestClassify(t *testing.T) {
@@ -103,6 +107,39 @@ func TestCheck(t *testing.T) {
 	}
 	if got := check(context.Background(), client, post, `a"b`); got.Status != "not_found" || body != `{"login":"a\"b"}` {
 		t.Fatalf("%+v body %s", got, body)
+	}
+}
+
+func TestANSIStyles(t *testing.T) {
+	r := lipgloss.NewRenderer(os.Stdout)
+	r.SetColorProfile(termenv.ANSI)
+	v := &view{
+		nameW: 6,
+		hit:   r.NewStyle().Foreground(lipgloss.Color("2")),
+		name:  r.NewStyle().Bold(true).Width(6),
+		url:   r.NewStyle().Faint(true),
+		miss:  r.NewStyle().Foreground(lipgloss.Color("8")).Faint(true),
+		err:   r.NewStyle().Foreground(lipgloss.Color("3")),
+		gray:  r.NewStyle().Foreground(lipgloss.Color("8")),
+	}
+	hit := v.row(Result{Status: "found", Name: "GitHub", URL: "https://github.com/x"})
+	if !strings.Contains(hit, "\x1b[32m") || !strings.Contains(hit, "\x1b[1mGitHub") || !strings.Contains(hit, "\x1b[2mhttps://") {
+		t.Fatalf("hit %q", hit)
+	}
+	if strings.Contains(hit, "38;5;") || strings.Contains(hit, "38;2;") {
+		t.Fatalf("not ansi 16 %q", hit)
+	}
+	miss := v.row(Result{Status: "not_found", Name: "GitHub"})
+	if !strings.Contains(miss, "90m") || !strings.Contains(miss, "not found") {
+		t.Fatalf("miss %q", miss)
+	}
+	got := v.row(Result{Status: "error", Name: "GitHub", Error: "timeout"})
+	if !strings.Contains(got, "\x1b[33m") || !strings.Contains(got, "timeout") {
+		t.Fatalf("err %q", got)
+	}
+	sum := v.summary(report{Found: 2, NotFound: 3, Errors: 1, MS: 900}, "")
+	if !strings.Contains(sum, "\x1b[32m2 found") || !strings.Contains(sum, "\x1b[33m1 error") || !strings.Contains(sum, "\x1b[90m") {
+		t.Fatalf("summary %q", sum)
 	}
 }
 
