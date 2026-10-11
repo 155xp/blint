@@ -1,209 +1,35 @@
 {
-  "source": "https://github.com/WebBreacher/WhatsMyName",
-  "license": "CC BY-SA 4.0",
-  "note": "Detection subset of github.com/155xp/osint src/data/sites.json. URL patterns, status codes, and not-found text or redirect markers come from Project WhatsMyName. To resync, copy that file over this one and rebuild.",
+  "source": "https://github.com/sherlock-project/sherlock",
+  "license": "MIT; CC BY-SA 4.0",
+  "note": "Validated public username checks. Sherlock and Maigret (MIT) plus Project WhatsMyName (CC BY-SA 4.0). Each site separates a real profile from a missing one by status code, a missing-text marker, or a redirect. Challenge-walled, login-walled, and flaky targets are omitted.",
+  "sources": [
+    {
+      "name": "Sherlock",
+      "url": "https://github.com/sherlock-project/sherlock",
+      "license": "MIT"
+    },
+    {
+      "name": "Maigret",
+      "url": "https://github.com/soxoj/maigret",
+      "license": "MIT"
+    },
+    {
+      "name": "WhatsMyName",
+      "url": "https://github.com/WebBreacher/WhatsMyName",
+      "license": "CC BY-SA 4.0"
+    }
+  ],
   "sites": [
     {
-      "id": "github",
-      "name": "GitHub",
-      "category": "coding",
-      "uri_check": "https://api.github.com/users/{account}",
-      "uri_pretty": "https://github.com/{account}",
-      "e_code": 200,
-      "e_string": "\"id\":",
-      "m_code": 404,
-      "m_string": "\"status\": \"404\""
-    },
-    {
-      "id": "gitlab",
-      "name": "GitLab",
-      "category": "coding",
-      "uri_check": "https://gitlab.com/api/v4/users?username={account}",
-      "uri_pretty": "https://gitlab.com/{account}",
-      "e_code": 200,
-      "e_string": "\"id\":",
-      "m_code": 200,
-      "m_string": "[]"
-    },
-    {
-      "id": "bitbucket",
-      "name": "Bitbucket",
-      "category": "coding",
-      "uri_check": "https://bitbucket.org/!api/2.0/repositories/{account}?page=1&pagelen=25&sort=-updated_on&q=&fields=-values.owner%2C-values.workspace",
-      "uri_pretty": "https://bitbucket.org/{account}/workspace/repositories/",
-      "e_code": 200,
-      "e_string": "full_name",
-      "m_code": 404,
-      "m_string": "No workspace with identifier",
-      "m_alt_code": 403,
-      "m_alt_string": "deactivated due to inactivity"
-    },
-    {
-      "id": "codeberg",
-      "name": "Codeberg",
-      "category": "coding",
-      "uri_check": "https://codeberg.org/api/v1/users/{account}",
-      "uri_pretty": "https://codeberg.org/{account}",
-      "e_code": 200,
-      "e_string": "\"id\":",
-      "m_code": 404,
-      "m_string": "user redirect does not exist"
-    },
-    {
-      "id": "rubygems",
-      "name": "RubyGems",
-      "category": "coding",
-      "uri_check": "https://rubygems.org/api/v1/profiles/{account}.json",
-      "uri_pretty": "https://rubygems.org/profiles/{account}",
-      "e_code": 200,
-      "e_string": "\"id\":",
-      "m_code": 404,
-      "m_string": "\"error\":\"Not Found\""
-    },
-    {
-      "id": "docker-hub",
-      "name": "Docker Hub",
-      "category": "coding",
-      "uri_check": "https://hub.docker.com/v2/users/{account}/",
-      "uri_pretty": "https://hub.docker.com/u/{account}",
-      "e_code": 200,
-      "e_string": "\"uuid\":",
-      "m_code": 404,
-      "m_string": "\"message\":\"User not found\""
-    },
-    {
-      "id": "huggingface",
-      "name": "Hugging Face",
-      "category": "tech",
-      "uri_check": "https://huggingface.co/api/users/{account}/overview",
-      "uri_pretty": "https://huggingface.co/{account}",
-      "e_code": 200,
-      "e_string": "\"user\":",
-      "m_code": 404,
-      "m_string": "This user does not exist",
-      "follow_redirects": true
-    },
-    {
-      "id": "kaggle",
-      "name": "Kaggle",
-      "category": "coding",
-      "uri_check": "https://www.kaggle.com/{account}",
+      "id": "threads",
+      "name": "Threads",
+      "category": "social",
+      "uri_check": "https://www.threads.com/@{account}",
       "uri_pretty": null,
       "e_code": 200,
-      "e_string": "property=\"og:username\"",
-      "m_code": 404,
-      "m_string": "<title>Kaggle: Your Home for Data Science</title>"
-    },
-    {
-      "id": "devto",
-      "name": "dev.to",
-      "category": "coding",
-      "uri_check": "https://dev.to/api/users/by_username?url={account}",
-      "uri_pretty": "https://dev.to/{account}",
-      "e_code": 200,
-      "e_string": "\"id\":",
-      "m_code": 404,
-      "m_string": "\"status\":404"
-    },
-    {
-      "id": "medium",
-      "name": "Medium",
-      "category": "news",
-      "uri_check": "https://medium.com/feed/@{account}",
-      "uri_pretty": "https://medium.com/@{account}",
-      "e_code": 200,
-      "e_string": "<rss",
-      "m_code": 404,
-      "m_string": "Not Found",
-      "strip_bad_char": "."
-    },
-    {
-      "id": "hackernews",
-      "name": "Hacker News",
-      "category": "tech",
-      "uri_check": "https://hacker-news.firebaseio.com/v0/user/{account}.json?print=pretty",
-      "uri_pretty": "https://news.ycombinator.com/user?id={account}",
-      "e_code": 200,
-      "e_string": "\"id\" :",
-      "m_code": 200,
-      "m_string": "null"
-    },
-    {
-      "id": "codewars",
-      "name": "Codewars",
-      "category": "coding",
-      "uri_check": "https://www.codewars.com/api/v1/users/{account}",
-      "uri_pretty": "https://www.codewars.com/users/{account}",
-      "e_code": 200,
-      "e_string": "\"id\":",
-      "m_code": 404,
-      "m_string": "\"reason\":\"not found\""
-    },
-    {
-      "id": "codeforces",
-      "name": "Codeforces",
-      "category": "coding",
-      "uri_check": "https://codeforces.com/api/user.info?handles={account}",
-      "uri_pretty": "https://codeforces.com/profile/{account}",
-      "e_code": 200,
-      "e_string": "\"status\":\"OK\"",
-      "m_code": 400,
-      "m_string": "\"status\":\"FAILED\""
-    },
-    {
-      "id": "atcoder",
-      "name": "AtCoder",
-      "category": "coding",
-      "uri_check": "https://atcoder.jp/users/{account}",
-      "uri_pretty": null,
-      "e_code": 200,
-      "e_string": "<h3>Contest Status</h3>",
-      "m_code": 404,
-      "m_string": ">404 Page Not Found</h1>"
-    },
-    {
-      "id": "codechef",
-      "name": "CodeChef",
-      "category": "coding",
-      "uri_check": "https://www.codechef.com/users/{account}",
-      "uri_pretty": null,
-      "e_code": 200,
-      "e_string": "class=\"user-profile-container\"",
+      "e_string": "og:type\" content=\"profile",
       "m_code": 302,
       "m_string": ""
-    },
-    {
-      "id": "hackerrank",
-      "name": "HackerRank",
-      "category": "tech",
-      "uri_check": "https://www.hackerrank.com/rest/contests/master/hackers/{account}/profile",
-      "uri_pretty": "https://www.hackerrank.com/profile/{account}",
-      "e_code": 200,
-      "e_string": "\"model\":",
-      "m_code": 404,
-      "m_string": "\"error\":\"Not Found\""
-    },
-    {
-      "id": "topcoder",
-      "name": "Topcoder",
-      "category": "coding",
-      "uri_check": "https://api.topcoder.com/v5/members/{account}",
-      "uri_pretty": "https://profiles.topcoder.com/{account}",
-      "e_code": 200,
-      "e_string": "\"userId\":",
-      "m_code": 404,
-      "m_string": "\"message\":\"Not Found\""
-    },
-    {
-      "id": "aboutme",
-      "name": "about.me",
-      "category": "social",
-      "uri_check": "https://about.me/{account}",
-      "uri_pretty": null,
-      "e_code": 200,
-      "e_string": " | about.me",
-      "m_code": 404,
-      "m_string": "<title>about.me</title>"
     },
     {
       "id": "bluesky",
@@ -214,7 +40,388 @@
       "e_code": 200,
       "e_string": "\"handle\":\"",
       "m_code": 400,
-      "m_string": "\"message\":\"Profile not found\""
+      "m_string": "\"message\":\"Profile not found\"",
+      "enrich": {
+        "image": "avatar",
+        "followers": "followersCount",
+        "following": "followsCount",
+        "posts": "postsCount"
+      }
+    },
+    {
+      "id": "roblox",
+      "name": "Roblox",
+      "category": "gaming",
+      "uri_check": "https://auth.roblox.com/v1/usernames/validate?username={account}&birthday=2019-12-31T23:00:00.000Z",
+      "uri_pretty": "https://www.roblox.com/search/users?keyword={account}",
+      "e_code": 200,
+      "e_string": "Username is already in use",
+      "m_code": 200,
+      "m_string": "Username is valid"
+    },
+    {
+      "id": "steam",
+      "name": "Steam",
+      "category": "gaming",
+      "uri_check": "https://steamcommunity.com/id/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "g_rgProfileData =",
+      "m_code": 200,
+      "m_string": "Steam Community :: Error",
+      "enrich": {
+        "image": "og:image"
+      }
+    },
+    {
+      "id": "chesscom",
+      "name": "Chess.com",
+      "category": "gaming",
+      "uri_check": "https://api.chess.com/pub/player/{account}",
+      "uri_pretty": "https://www.chess.com/member/{account}",
+      "e_code": 200,
+      "e_string": "\"player_id\":",
+      "m_code": 404,
+      "m_string": "\"code\":0",
+      "enrich": {
+        "image": "avatar",
+        "followers": "followers"
+      }
+    },
+    {
+      "id": "lichess",
+      "name": "Lichess",
+      "category": "gaming",
+      "uri_check": "https://lichess.org/api/user/{account}",
+      "uri_pretty": "https://lichess.org/@/{account}",
+      "e_code": 200,
+      "e_string": "\"id\":",
+      "m_code": 404,
+      "m_string": "\"error\":\"Not found\"",
+      "enrich": {
+        "posts": "count.all"
+      }
+    },
+    {
+      "id": "spotify",
+      "name": "Spotify",
+      "category": "music",
+      "uri_check": "https://open.spotify.com/user/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "content=\"profile\"",
+      "m_code": 404,
+      "m_string": "Page not found",
+      "enrich": {
+        "image": "og:image"
+      }
+    },
+    {
+      "id": "soundcloud",
+      "name": "SoundCloud",
+      "category": "music",
+      "uri_check": "https://soundcloud.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "\"hydratable\":\"user\"",
+      "m_code": 404,
+      "m_string": "<title>SoundCloud - Hear the world’s sounds</title>",
+      "enrich": {
+        "image": "og:image",
+        "followers": "html:followers_count",
+        "following": "html:followings_count",
+        "posts": "html:track_count"
+      }
+    },
+    {
+      "id": "linktree",
+      "name": "Linktree",
+      "category": "creator",
+      "uri_check": "https://linktr.ee/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "\"uuid\":",
+      "m_code": 404,
+      "m_string": "\"statusCode\":404"
+    },
+    {
+      "id": "substack",
+      "name": "Substack",
+      "category": "creator",
+      "uri_check": "https://substack.com/api/v1/user/{account}/public_profile",
+      "uri_pretty": "https://substack.com/@{account}",
+      "e_code": 200,
+      "e_string": "\"id\":",
+      "m_code": 404,
+      "m_string": "\"error\":\"profile not found\"",
+      "enrich": {
+        "image": "photo_url"
+      }
+    },
+    {
+      "id": "hackernews",
+      "name": "Hacker News",
+      "category": "dev",
+      "uri_check": "https://news.ycombinator.com/user?id={account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 200,
+      "m_string": "No such user."
+    },
+    {
+      "id": "keybase",
+      "name": "Keybase",
+      "category": "social",
+      "uri_check": "https://keybase.io/_/api/1.0/user/lookup.json?usernames={account}",
+      "uri_pretty": "https://keybase.io/{account}",
+      "e_code": 200,
+      "e_string": "\"id\":",
+      "m_code": 200,
+      "m_string": "\"them\":[null]",
+      "enrich": {
+        "image": "them.0.pictures.primary.url"
+      }
+    },
+    {
+      "id": "gitlab",
+      "name": "GitLab",
+      "category": "dev",
+      "uri_check": "https://gitlab.com/api/v4/users?username={account}",
+      "uri_pretty": "https://gitlab.com/{account}",
+      "e_code": 200,
+      "e_string": "\"id\":",
+      "m_code": 200,
+      "m_string": "[]",
+      "enrich": {
+        "image": "0.avatar_url"
+      }
+    },
+    {
+      "id": "codeberg",
+      "name": "Codeberg",
+      "category": "dev",
+      "uri_check": "https://codeberg.org/api/v1/users/{account}",
+      "uri_pretty": "https://codeberg.org/{account}",
+      "e_code": 200,
+      "e_string": "\"id\":",
+      "m_code": 404,
+      "m_string": "user redirect does not exist",
+      "enrich": {
+        "image": "avatar_url",
+        "followers": "followers_count",
+        "following": "following_count"
+      }
+    },
+    {
+      "id": "leetcode",
+      "name": "LeetCode",
+      "category": "dev",
+      "uri_check": "https://leetcode.com/graphql",
+      "uri_pretty": "https://leetcode.com/{account}",
+      "e_code": 200,
+      "e_string": "\"username\":",
+      "m_code": 200,
+      "m_string": "does not exist",
+      "method": "POST",
+      "body": "{\"query\":\"query($username:String!){matchedUser(username:$username){username}}\",\"variables\":{\"username\":\"{account}\"}}",
+      "headers": {
+        "content-type": "application/json"
+      }
+    },
+    {
+      "id": "kaggle",
+      "name": "Kaggle",
+      "category": "dev",
+      "uri_check": "https://www.kaggle.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "property=\"og:username\"",
+      "m_code": 404,
+      "m_string": "<title>Kaggle: Your Home for Data Science</title>"
+    },
+    {
+      "id": "huggingface",
+      "name": "Hugging Face",
+      "category": "dev",
+      "uri_check": "https://huggingface.co/api/users/{account}/overview",
+      "uri_pretty": "https://huggingface.co/{account}",
+      "e_code": 200,
+      "e_string": "\"user\":",
+      "m_code": 404,
+      "m_string": "This user does not exist",
+      "follow_redirects": true,
+      "enrich": {
+        "image": "avatarUrl",
+        "followers": "numFollowers",
+        "following": "numFollowing"
+      }
+    },
+    {
+      "id": "docker-hub",
+      "name": "Docker Hub",
+      "category": "dev",
+      "uri_check": "https://hub.docker.com/v2/users/{account}/",
+      "uri_pretty": "https://hub.docker.com/u/{account}",
+      "e_code": 200,
+      "e_string": "\"uuid\":",
+      "m_code": 404,
+      "m_string": "\"message\":\"User not found\"",
+      "enrich": {
+        "image": "gravatar_url"
+      }
+    },
+    {
+      "id": "devto",
+      "name": "dev.to",
+      "category": "dev",
+      "uri_check": "https://dev.to/api/users/by_username?url={account}",
+      "uri_pretty": "https://dev.to/{account}",
+      "e_code": 200,
+      "e_string": "\"id\":",
+      "m_code": 404,
+      "m_string": "\"status\":404",
+      "enrich": {
+        "image": "profile_image"
+      }
+    },
+    {
+      "id": "github",
+      "name": "GitHub",
+      "category": "dev",
+      "uri_check": "https://api.github.com/users/{account}",
+      "uri_pretty": "https://github.com/{account}",
+      "e_code": 200,
+      "e_string": "\"id\":",
+      "m_code": 404,
+      "m_string": "\"status\": \"404\"",
+      "enrich": {
+        "image": "avatar_url",
+        "followers": "followers",
+        "following": "following",
+        "posts": "public_repos"
+      }
+    },
+    {
+      "id": "bitbucket",
+      "name": "Bitbucket",
+      "category": "dev",
+      "uri_check": "https://bitbucket.org/!api/2.0/repositories/{account}?page=1&pagelen=25&sort=-updated_on&q=&fields=-values.owner%2C-values.workspace",
+      "uri_pretty": "https://bitbucket.org/{account}/workspace/repositories/",
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "rubygems",
+      "name": "RubyGems",
+      "category": "dev",
+      "uri_check": "https://rubygems.org/api/v1/profiles/{account}.json",
+      "uri_pretty": "https://rubygems.org/profiles/{account}",
+      "e_code": 200,
+      "e_string": "\"id\":",
+      "m_code": 404,
+      "m_string": "\"error\":\"Not Found\""
+    },
+    {
+      "id": "medium",
+      "name": "Medium",
+      "category": "creator",
+      "uri_check": "https://medium.com/feed/@{account}",
+      "uri_pretty": "https://medium.com/@{account}",
+      "e_code": 200,
+      "e_string": "<rss",
+      "m_code": 404,
+      "m_string": "Not Found",
+      "strip_bad_char": "."
+    },
+    {
+      "id": "codewars",
+      "name": "Codewars",
+      "category": "dev",
+      "uri_check": "https://www.codewars.com/api/v1/users/{account}",
+      "uri_pretty": "https://www.codewars.com/users/{account}",
+      "e_code": 200,
+      "e_string": "\"id\":",
+      "m_code": 404,
+      "m_string": "\"reason\":\"not found\"",
+      "enrich": {
+        "image": "profileImage"
+      }
+    },
+    {
+      "id": "codeforces",
+      "name": "Codeforces",
+      "category": "dev",
+      "uri_check": "https://codeforces.com/api/user.info?handles={account}",
+      "uri_pretty": "https://codeforces.com/profile/{account}",
+      "e_code": 200,
+      "e_string": "\"status\":\"OK\"",
+      "m_code": 400,
+      "m_string": "\"status\":\"FAILED\"",
+      "enrich": {
+        "image": "result.0.avatar",
+        "followers": "result.0.friendOfCount"
+      }
+    },
+    {
+      "id": "atcoder",
+      "name": "AtCoder",
+      "category": "dev",
+      "uri_check": "https://atcoder.jp/users/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "<h3>Contest Status</h3>",
+      "m_code": 404,
+      "m_string": ">404 Page Not Found</h1>"
+    },
+    {
+      "id": "codechef",
+      "name": "CodeChef",
+      "category": "dev",
+      "uri_check": "https://www.codechef.com/users/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "class=\"user-profile-container\"",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "hackerrank",
+      "name": "HackerRank",
+      "category": "dev",
+      "uri_check": "https://www.hackerrank.com/rest/contests/master/hackers/{account}/profile",
+      "uri_pretty": "https://www.hackerrank.com/profile/{account}",
+      "e_code": 200,
+      "e_string": "\"model\":",
+      "m_code": 404,
+      "m_string": "\"error\":\"Not Found\"",
+      "enrich": {
+        "image": "model.avatar"
+      }
+    },
+    {
+      "id": "topcoder",
+      "name": "Topcoder",
+      "category": "dev",
+      "uri_check": "https://api.topcoder.com/v6/members/{account}",
+      "uri_pretty": "https://profiles.topcoder.com/{account}/",
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "aboutme",
+      "name": "about.me",
+      "category": "creator",
+      "uri_check": "https://about.me/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": " | about.me",
+      "m_code": 404,
+      "m_string": "<title>about.me</title>"
     },
     {
       "id": "x",
@@ -228,7 +435,12 @@
       "m_string": "User Profile Not Found",
       "m_alt_code": 200,
       "m_alt_string": "Account suspended",
-      "follow_redirects": true
+      "follow_redirects": true,
+      "enrich": {
+        "image": "og:image",
+        "followers": "x:followers",
+        "following": "x:following"
+      }
     },
     {
       "id": "telegram",
@@ -241,7 +453,11 @@
       "m_code": 200,
       "m_string": "noindex, nofollow",
       "m_alt_code": 302,
-      "m_alt_string": ""
+      "m_alt_string": "",
+      "enrich": {
+        "image": "og:image",
+        "subscribers": "tg:subscribers"
+      }
     },
     {
       "id": "pinterest",
@@ -252,69 +468,48 @@
       "e_code": 200,
       "e_string": "\"status\":\"success\"",
       "m_code": 404,
-      "m_string": "User not found"
+      "m_string": "User not found",
+      "enrich": {
+        "image": "data.user.image_small_url",
+        "followers": "data.user.follower_count",
+        "posts": "data.user.pin_count"
+      }
     },
     {
       "id": "tumblr",
       "name": "Tumblr",
-      "category": "images",
+      "category": "social",
       "uri_check": "https://www.tumblr.com/{account}",
       "uri_pretty": null,
       "e_code": 200,
       "e_string": " on Tumblr",
       "m_code": 404,
       "m_string": "\"status\":404",
-      "strip_bad_char": "."
-    },
-    {
-      "id": "keybase",
-      "name": "Keybase",
-      "category": "social",
-      "uri_check": "https://keybase.io/_/api/1.0/user/lookup.json?usernames={account}",
-      "uri_pretty": "https://keybase.io/{account}",
-      "e_code": 200,
-      "e_string": "\"id\":",
-      "m_code": 200,
-      "m_string": "\"them\":[null]"
-    },
-    {
-      "id": "gravatar",
-      "name": "Gravatar",
-      "category": "images",
-      "uri_check": "https://en.gravatar.com/{account}.json",
-      "uri_pretty": "https://en.gravatar.com/{account}",
-      "e_code": 200,
-      "e_string": "entry",
-      "m_code": 404,
-      "m_string": "User not found"
-    },
-    {
-      "id": "linktree",
-      "name": "Linktree",
-      "category": "social",
-      "uri_check": "https://linktr.ee/{account}",
-      "uri_pretty": null,
-      "e_code": 200,
-      "e_string": "\"uuid\":",
-      "m_code": 404,
-      "m_string": "\"statusCode\":404"
+      "strip_bad_char": ".",
+      "enrich": {
+        "image": "og:image"
+      }
     },
     {
       "id": "youtube",
       "name": "YouTube",
-      "category": "video",
+      "category": "creator",
       "uri_check": "https://www.youtube.com/@{account}",
       "uri_pretty": null,
       "e_code": 200,
-      "e_string": "canonicalBaseUrl",
+      "e_string": "visitorData",
       "m_code": 404,
-      "m_string": "<title>404 Not Found</title>",
-      "follow_redirects": true
+      "m_string": "",
+      "enrich": {
+        "image": "og:image",
+        "subscribers": "yt:subscribers",
+        "posts": "yt:videos"
+      }
     },
     {
       "id": "tiktok",
       "name": "TikTok",
-      "category": "social",
+      "category": "creator",
       "uri_check": "https://www.tiktok.com/oembed?url=https://www.tiktok.com/@{account}",
       "uri_pretty": "https://www.tiktok.com/@{account}",
       "e_code": 200,
@@ -332,40 +527,52 @@
       "e_string": "is on Snapchat!",
       "m_code": 404,
       "m_string": "NOT_FOUND",
-      "follow_redirects": true
+      "follow_redirects": true,
+      "enrich": {
+        "image": "html:profilePictureUrl",
+        "subscribers": "html:subscriberCount"
+      }
     },
     {
       "id": "twitch",
       "name": "Twitch",
-      "category": "gaming",
+      "category": "creator",
       "uri_check": "https://gql.twitch.tv/gql",
       "uri_pretty": "https://www.twitch.tv/{account}",
+      "e_code": 200,
+      "e_string": "\"profileImageURL\":",
+      "m_code": 200,
+      "m_string": "\"user\":null",
       "method": "POST",
+      "body": "{\"query\":\"query($login:String!){user(login:$login){login profileImageURL(width:300) followers{totalCount}}}\",\"variables\":{\"login\":\"{account}\"}}",
       "headers": {
         "Client-ID": "kimne78kx3ncx6brgo4mv6wki5h1ko",
         "Content-Type": "application/json"
       },
-      "body": "{\"query\":\"query($login:String!){user(login:$login){login profileImageURL(width:300) followers{totalCount}}}\",\"variables\":{\"login\":\"{account}\"}}",
-      "e_code": 200,
-      "e_string": "\"profileImageURL\":",
-      "m_code": 200,
-      "m_string": "\"user\":null"
+      "enrich": {
+        "image": "data.user.profileImageURL",
+        "followers": "data.user.followers.totalCount"
+      }
     },
     {
       "id": "vimeo",
       "name": "Vimeo",
-      "category": "video",
+      "category": "creator",
       "uri_check": "https://vimeo.com/api/v2/{account}/info.json",
       "uri_pretty": "https://vimeo.com/{account}",
       "e_code": 200,
       "e_string": "\"id\":",
       "m_code": 404,
-      "m_string": "not found."
+      "m_string": "not found.",
+      "enrich": {
+        "image": "portrait_huge",
+        "posts": "total_videos_uploaded"
+      }
     },
     {
       "id": "flickr",
       "name": "Flickr",
-      "category": "images",
+      "category": "creator",
       "uri_check": "https://www.flickr.com/photos/{account}/",
       "uri_pretty": null,
       "e_code": 200,
@@ -376,46 +583,16 @@
     {
       "id": "deviantart",
       "name": "DeviantArt",
-      "category": "images",
+      "category": "creator",
       "uri_check": "https://www.deviantart.com/{account}",
       "uri_pretty": null,
       "e_code": 200,
       "e_string": " on DeviantArt",
       "m_code": 404,
-      "m_string": ""
-    },
-    {
-      "id": "dribbble",
-      "name": "Dribbble",
-      "category": "art",
-      "uri_check": "https://dribbble.com/{account}",
-      "uri_pretty": null,
-      "e_code": 200,
-      "e_string": " | Dribbble",
-      "m_code": 404,
-      "m_string": ""
-    },
-    {
-      "id": "artstation",
-      "name": "ArtStation",
-      "category": "art",
-      "uri_check": "https://www.artstation.com/api/v2/user_profiles/{account}.json",
-      "uri_pretty": "https://www.artstation.com/{account}",
-      "e_code": 200,
-      "e_string": "\"id\":",
-      "m_code": 404,
-      "m_string": "\"message\":\"User with username:"
-    },
-    {
-      "id": "soundcloud",
-      "name": "SoundCloud",
-      "category": "music",
-      "uri_check": "https://soundcloud.com/{account}",
-      "uri_pretty": null,
-      "e_code": 200,
-      "e_string": "\"hydratable\":\"user\"",
-      "m_code": 404,
-      "m_string": "<title>SoundCloud - Hear the world’s sounds</title>"
+      "m_string": "",
+      "enrich": {
+        "image": "og:image"
+      }
     },
     {
       "id": "bandcamp",
@@ -437,12 +614,17 @@
       "e_code": 200,
       "e_string": "\"username\":",
       "m_code": 404,
-      "m_string": "\"error\":"
+      "m_string": "\"error\":",
+      "enrich": {
+        "image": "pictures.medium",
+        "followers": "follower_count",
+        "following": "following_count"
+      }
     },
     {
       "id": "myanimelist",
       "name": "MyAnimeList",
-      "category": "social",
+      "category": "other",
       "uri_check": "https://myanimelist.net/profile/{account}",
       "uri_pretty": null,
       "e_code": 200,
@@ -451,20 +633,9 @@
       "m_string": "<title>404 Not Found"
     },
     {
-      "id": "duolingo",
-      "name": "Duolingo",
-      "category": "hobby",
-      "uri_check": "https://www.duolingo.com/2017-06-30/users?username={account}&_=1628308619574",
-      "uri_pretty": "https://www.duolingo.com/profile/{account}",
-      "e_code": 200,
-      "e_string": "joinedClassroomIds",
-      "m_code": 200,
-      "m_string": "\"users\" : []"
-    },
-    {
       "id": "openstreetmap",
       "name": "OpenStreetMap",
-      "category": "social",
+      "category": "other",
       "uri_check": "https://www.openstreetmap.org/user/{account}",
       "uri_pretty": null,
       "e_code": 200,
@@ -475,7 +646,7 @@
     {
       "id": "patreon",
       "name": "Patreon",
-      "category": "finance",
+      "category": "creator",
       "uri_check": "https://www.patreon.com/{account}",
       "uri_pretty": null,
       "e_code": 200,
@@ -483,17 +654,6 @@
       "m_code": 404,
       "m_string": "Not found | Patreon",
       "follow_redirects": true
-    },
-    {
-      "id": "steam",
-      "name": "Steam",
-      "category": "gaming",
-      "uri_check": "https://steamcommunity.com/id/{account}",
-      "uri_pretty": null,
-      "e_code": 200,
-      "e_string": "g_rgProfileData =",
-      "m_code": 200,
-      "m_string": "Steam Community :: Error"
     },
     {
       "id": "osu",
@@ -505,7 +665,11 @@
       "e_string": " · player info",
       "m_code": 404,
       "m_string": "User not found",
-      "follow_redirects": true
+      "follow_redirects": true,
+      "enrich": {
+        "image": "og:image",
+        "followers": "html:follower_count"
+      }
     },
     {
       "id": "speedrun",
@@ -516,34 +680,15 @@
       "e_code": 200,
       "e_string": "\"weblink\":",
       "m_code": 200,
-      "m_string": "\"data\":[]"
-    },
-    {
-      "id": "lichess",
-      "name": "Lichess",
-      "category": "gaming",
-      "uri_check": "https://lichess.org/api/user/{account}",
-      "uri_pretty": "https://lichess.org/@/{account}",
-      "e_code": 200,
-      "e_string": "\"id\":",
-      "m_code": 404,
-      "m_string": "\"error\":\"Not found\""
-    },
-    {
-      "id": "chesscom",
-      "name": "Chess.com",
-      "category": "gaming",
-      "uri_check": "https://api.chess.com/pub/player/{account}",
-      "uri_pretty": "https://www.chess.com/member/{account}",
-      "e_code": 200,
-      "e_string": "\"player_id\":",
-      "m_code": 404,
-      "m_string": "\"code\":0"
+      "m_string": "\"data\":[]",
+      "enrich": {
+        "image": "data.0.assets.image.uri"
+      }
     },
     {
       "id": "pastebin",
       "name": "Pastebin",
-      "category": "tech",
+      "category": "other",
       "uri_check": "https://pastebin.com/u/{account}",
       "uri_pretty": null,
       "e_code": 200,
@@ -554,7 +699,7 @@
     {
       "id": "bugcrowd",
       "name": "Bugcrowd",
-      "category": "tech",
+      "category": "dev",
       "uri_check": "https://bugcrowd.com/profile-service/v1/profiles/{account}",
       "uri_pretty": "https://bugcrowd.com/h/{account}",
       "e_code": 200,
@@ -565,18 +710,23 @@
     {
       "id": "wattpad",
       "name": "Wattpad",
-      "category": "social",
+      "category": "creator",
       "uri_check": "https://www.wattpad.com/api/v3/users/{account}",
       "uri_pretty": "https://www.wattpad.com/user/{account}",
       "e_code": 200,
       "e_string": "\"username\":",
       "m_code": 400,
-      "m_string": "\"error_code\":"
+      "m_string": "\"error_code\":",
+      "enrich": {
+        "image": "avatar",
+        "followers": "numFollowers",
+        "posts": "numStoriesPublished"
+      }
     },
     {
       "id": "instructables",
       "name": "Instructables",
-      "category": "hobby",
+      "category": "creator",
       "uri_check": "https://www.instructables.com/json-api/showAuthorExists?screenName={account}",
       "uri_pretty": "https://www.instructables.com/member/{account}/",
       "e_code": 200,
@@ -587,29 +737,35 @@
     {
       "id": "trello",
       "name": "Trello",
-      "category": "social",
+      "category": "other",
       "uri_check": "https://trello.com/1/Members/{account}",
       "uri_pretty": "https://trello.com/{account}",
       "e_code": 200,
       "e_string": "\"id\":",
       "m_code": 404,
-      "m_string": "<h1>Oh no! 404!</h1>"
+      "m_string": "<h1>Oh no! 404!</h1>",
+      "enrich": {
+        "image": "avatarUrl"
+      }
     },
     {
       "id": "wordpress-com",
       "name": "WordPress",
-      "category": "blog",
+      "category": "creator",
       "uri_check": "https://public-api.wordpress.com/rest/v1.1/sites/{account}.wordpress.com",
       "uri_pretty": "https://{account}.wordpress.com",
       "e_code": 200,
       "e_string": "\"ID\":",
       "m_code": 404,
-      "m_string": "\"error\":\"unknown_blog\""
+      "m_string": "\"error\":\"unknown_blog\"",
+      "enrich": {
+        "followers": "subscribers_count"
+      }
     },
     {
       "id": "disqus",
       "name": "Disqus",
-      "category": "social",
+      "category": "other",
       "uri_check": "https://disqus.com/api/3.0/users/details?user=username:{account}&api_key=E8Uh5l5fHZ6gD8U3KycjAIAk46f68Zw7C6eW8WSjZvCLXebZ7p0r1yrYDrLilk2F",
       "uri_pretty": "https://disqus.com/by/{account}/",
       "e_code": 200,
@@ -620,51 +776,35 @@
     {
       "id": "scratch",
       "name": "Scratch",
-      "category": "coding",
+      "category": "other",
       "uri_check": "https://api.scratch.mit.edu/users/{account}",
       "uri_pretty": "https://scratch.mit.edu/users/{account}/",
       "e_code": 200,
       "e_string": "\"username\":",
       "m_code": 404,
-      "m_string": "\"code\":\"NotFound\""
-    },
-    {
-      "id": "monkeytype",
-      "name": "Monkeytype",
-      "category": "coding",
-      "uri_check": "https://api.monkeytype.com/users/{account}/profile",
-      "uri_pretty": "https://monkeytype.com/profile/{account}",
-      "e_code": 200,
-      "e_string": "\"message\":\"Profile retrieved\"",
-      "m_code": 404,
-      "m_string": "\"message\":\"User not found\""
+      "m_string": "\"code\":\"NotFound\"",
+      "enrich": {
+        "image": "profile.images.90x90"
+      }
     },
     {
       "id": "wakatime",
       "name": "WakaTime",
-      "category": "coding",
+      "category": "dev",
       "uri_check": "https://wakatime.com/api/v1/users/{account}",
       "uri_pretty": "https://wakatime.com/@{account}",
       "e_code": 200,
       "e_string": "\"data\":",
       "m_code": 404,
-      "m_string": "\"error\": \"Not found.\""
-    },
-    {
-      "id": "crates",
-      "name": "crates.io",
-      "category": "coding",
-      "uri_check": "https://crates.io/api/v1/users/{account}",
-      "uri_pretty": "https://crates.io/users/{account}",
-      "e_code": 200,
-      "e_string": "\"login\":",
-      "m_code": 404,
-      "m_string": "\"detail\":\"Not Found\""
+      "m_string": "\"error\": \"Not found.\"",
+      "enrich": {
+        "image": "data.photo"
+      }
     },
     {
       "id": "hexpm",
       "name": "Hex",
-      "category": "coding",
+      "category": "dev",
       "uri_check": "https://hex.pm/api/users/{account}",
       "uri_pretty": "https://hex.pm/users/{account}",
       "e_code": 200,
@@ -675,58 +815,45 @@
     {
       "id": "geeksforgeeks",
       "name": "GeeksforGeeks",
-      "category": "coding",
+      "category": "dev",
       "uri_check": "https://authapi.geeksforgeeks.org/api-get/user-profile-info/?handle={account}",
       "uri_pretty": "https://www.geeksforgeeks.org/user/{account}/",
       "e_code": 200,
       "e_string": "\"message\":\"data retrieved successfully\"",
       "m_code": 400,
-      "m_string": "\"message\":\"User not found!\""
+      "m_string": "\"message\":\"User not found!\"",
+      "enrich": {
+        "image": "data.profile_image_url"
+      }
     },
     {
       "id": "lobsters",
       "name": "Lobsters",
-      "category": "tech",
+      "category": "dev",
       "uri_check": "https://lobste.rs/~{account}.json",
       "uri_pretty": "https://lobste.rs/~{account}",
       "e_code": 200,
       "e_string": "\"username\":",
       "m_code": 404,
       "m_string": "User not found",
-      "follow_redirects": true
-    },
-    {
-      "id": "substack",
-      "name": "Substack",
-      "category": "news",
-      "uri_check": "https://substack.com/api/v1/user/{account}/public_profile",
-      "uri_pretty": "https://substack.com/@{account}",
-      "e_code": 200,
-      "e_string": "\"id\":",
-      "m_code": 404,
-      "m_string": "\"error\":\"profile not found\""
+      "follow_redirects": true,
+      "enrich": {
+        "image": "avatar_url"
+      }
     },
     {
       "id": "wikipedia",
       "name": "Wikipedia",
-      "category": "news",
+      "category": "other",
       "uri_check": "https://en.wikipedia.org/w/api.php?action=query&list=users&ususers={account}&usprop=editcount&format=json",
       "uri_pretty": "https://en.wikipedia.org/wiki/User:{account}",
       "e_code": 200,
       "e_string": "\"userid\":",
       "m_code": 200,
-      "m_string": "\"missing\":\"\""
-    },
-    {
-      "id": "spotify",
-      "name": "Spotify",
-      "category": "music",
-      "uri_check": "https://open.spotify.com/user/{account}",
-      "uri_pretty": null,
-      "e_code": 200,
-      "e_string": "content=\"profile\"",
-      "m_code": 404,
-      "m_string": "Page not found"
+      "m_string": "\"missing\":\"\"",
+      "enrich": {
+        "posts": "query.users.0.editcount"
+      }
     },
     {
       "id": "discogs",
@@ -737,29 +864,41 @@
       "e_code": 200,
       "e_string": "\"username\":",
       "m_code": 404,
-      "m_string": "User does not exist or may have been deleted."
+      "m_string": "User does not exist or may have been deleted.",
+      "enrich": {
+        "image": "avatar_url"
+      }
     },
     {
       "id": "imgur",
       "name": "Imgur",
-      "category": "images",
+      "category": "creator",
       "uri_check": "https://api.imgur.com/account/v1/accounts/{account}?client_id=546c25a59c58ad7",
       "uri_pretty": "https://imgur.com/user/{account}",
       "e_code": 200,
       "e_string": "\"username\":",
       "m_code": 404,
-      "m_string": "unable to find account"
+      "m_string": "unable to find account",
+      "enrich": {
+        "image": "avatar_url"
+      }
     },
     {
       "id": "dailymotion",
       "name": "Dailymotion",
-      "category": "video",
+      "category": "creator",
       "uri_check": "https://api.dailymotion.com/user/{account}?fields=id,username,avatar_720_url,followers_total,following_total,videos_total,url",
       "uri_pretty": "https://www.dailymotion.com/{account}",
       "e_code": 200,
       "e_string": "\"id\":",
       "m_code": 404,
-      "m_string": "\"code\":404"
+      "m_string": "\"code\":404",
+      "enrich": {
+        "image": "avatar_720_url",
+        "followers": "followers_total",
+        "following": "following_total",
+        "posts": "videos_total"
+      }
     },
     {
       "id": "itch",
@@ -779,9 +918,9 @@
       "uri_check": "https://www.gog.com/u/{account}",
       "uri_pretty": null,
       "e_code": 200,
-      "e_string": "window.profilesData.profileUser",
+      "e_string": "",
       "m_code": 302,
-      "m_string": "href=\"http://www.gog.com/404\""
+      "m_string": ""
     },
     {
       "id": "faceit",
@@ -806,17 +945,6 @@
       "m_string": "errorMessage"
     },
     {
-      "id": "roblox",
-      "name": "Roblox",
-      "category": "gaming",
-      "uri_check": "https://auth.roblox.com/v1/usernames/validate?username={account}&birthday=2019-12-31T23:00:00.000Z",
-      "uri_pretty": "https://www.roblox.com/search/users?keyword={account}",
-      "e_code": 200,
-      "e_string": "Username is already in use",
-      "m_code": 200,
-      "m_string": "Username is valid"
-    },
-    {
       "id": "habbo",
       "name": "Habbo",
       "category": "gaming",
@@ -836,35 +964,46 @@
       "e_code": 200,
       "e_string": "\"success\":true",
       "m_code": 404,
-      "m_string": "\"success\":false"
+      "m_string": "\"success\":false",
+      "enrich": {
+        "followers": "data.friend_count",
+        "posts": "data.gamesplayed"
+      }
     },
     {
       "id": "streamelements",
       "name": "StreamElements",
-      "category": "gaming",
+      "category": "creator",
       "uri_check": "https://api.streamelements.com/kappa/v2/channels/{account}",
       "uri_pretty": "https://streamelements.com/{account}",
       "e_code": 200,
       "e_string": "\"providerId\"",
       "m_code": 404,
-      "m_string": "\"statusCode\":404"
+      "m_string": "\"statusCode\":404",
+      "enrich": {
+        "image": "avatar"
+      }
     },
     {
       "id": "opencollective",
       "name": "Open Collective",
-      "category": "finance",
+      "category": "other",
       "uri_check": "https://opencollective.com/{account}.json",
       "uri_pretty": "https://opencollective.com/{account}",
       "e_code": 200,
       "e_string": "\"slug\":",
       "m_code": 404,
       "m_string": "Not found",
-      "follow_redirects": true
+      "follow_redirects": true,
+      "enrich": {
+        "image": "image",
+        "followers": "backersCount"
+      }
     },
     {
       "id": "freelancer",
       "name": "Freelancer",
-      "category": "business",
+      "category": "other",
       "uri_check": "https://www.freelancer.com/api/users/0.1/users?usernames%5B%5D={account}&compact=true",
       "uri_pretty": "https://www.freelancer.com/u/{account}",
       "e_code": 200,
@@ -875,18 +1014,24 @@
     {
       "id": "picsart",
       "name": "Picsart",
-      "category": "art",
+      "category": "creator",
       "uri_check": "https://api.picsart.com/users/show/{account}.json",
       "uri_pretty": "https://picsart.com/u/{account}",
       "e_code": 200,
       "e_string": "\"status\":\"success\"",
       "m_code": 200,
-      "m_string": "\"status\":\"error\""
+      "m_string": "\"status\":\"error\"",
+      "enrich": {
+        "image": "photo",
+        "followers": "followers_count",
+        "following": "following_count",
+        "posts": "photos_count"
+      }
     },
     {
       "id": "carrd",
       "name": "Carrd",
-      "category": "social",
+      "category": "creator",
       "uri_check": "https://{account}.carrd.co",
       "uri_pretty": null,
       "e_code": 200,
@@ -898,13 +1043,2271 @@
     {
       "id": "openlibrary",
       "name": "Open Library",
-      "category": "hobby",
+      "category": "other",
       "uri_check": "https://openlibrary.org/people/{account}.json",
       "uri_pretty": "https://openlibrary.org/people/{account}",
       "e_code": 200,
       "e_string": "",
       "m_code": 404,
       "m_string": "\"error\": \"notfound\""
+    },
+    {
+      "id": "aetherhub",
+      "name": "aetherhub",
+      "category": "gaming",
+      "uri_check": "https://aetherhub.com/User/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "airbit",
+      "name": "Airbit",
+      "category": "music",
+      "uri_check": "https://airbit.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "all-mods",
+      "name": "All-mods",
+      "category": "gaming",
+      "uri_check": "https://all-mods.ru/author/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "allmylinks",
+      "name": "AllMyLinks",
+      "category": "creator",
+      "uri_check": "https://allmylinks.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "aniworld",
+      "name": "AniWorld",
+      "category": "other",
+      "uri_check": "https://aniworld.to/user/profil/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "\"name\":",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "antipunk",
+      "name": "Antipunk",
+      "category": "music",
+      "uri_check": "https://antipunk.com/users/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "aparat",
+      "name": "Aparat",
+      "category": "creator",
+      "uri_check": "https://www.aparat.com/api/fa/v1/user/user/information/username/{account}",
+      "uri_pretty": "https://www.aparat.com/{account}/",
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "asciinema",
+      "name": "Asciinema",
+      "category": "dev",
+      "uri_check": "https://asciinema.org/~{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "audiojungle",
+      "name": "Audiojungle",
+      "category": "music",
+      "uri_check": "https://audiojungle.net/user/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "bandlab",
+      "name": "Bandlab",
+      "category": "music",
+      "uri_check": "https://www.bandlab.com/api/v1.3/users/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "bezuzyteczna",
+      "name": "Bezuzyteczna",
+      "category": "other",
+      "uri_check": "https://bezuzyteczna.pl/uzytkownicy/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "biggerpockets",
+      "name": "BiggerPockets",
+      "category": "other",
+      "uri_check": "https://www.biggerpockets.com/users/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "blipfoto",
+      "name": "Blipfoto",
+      "category": "creator",
+      "uri_check": "https://www.blipfoto.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "blitz-tactics",
+      "name": "Blitz Tactics",
+      "category": "gaming",
+      "uri_check": "https://blitztactics.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "boardgamegeek",
+      "name": "BoardGameGeek",
+      "category": "gaming",
+      "uri_check": "https://api.geekdo.com/api/accounts/validate/username?username={account}",
+      "uri_pretty": "https://boardgamegeek.com/user/{account}",
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 200,
+      "m_string": "\"isValid\":true"
+    },
+    {
+      "id": "brusheezy",
+      "name": "Brusheezy",
+      "category": "creator",
+      "uri_check": "https://www.brusheezy.com/members/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "canonical\" href=\"https://www.brusheezy.com/members/",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "caringbridge",
+      "name": "Caringbridge",
+      "category": "other",
+      "uri_check": "https://www.caringbridge.org/visit/{account}",
+      "uri_pretty": null,
+      "e_code": 307,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": "redirect-miss",
+      "m_redirect": "https://www.caringbridge.org/404"
+    },
+    {
+      "id": "cashapp",
+      "name": "CashApp",
+      "category": "other",
+      "uri_check": "https://cash.app/${account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "cent",
+      "name": "Cent",
+      "category": "creator",
+      "uri_check": "https://beta.cent.co/data/user/profile?userHandles={account}",
+      "uri_pretty": "https://beta.cent.co/@{account}",
+      "e_code": 200,
+      "e_string": "display_name",
+      "m_code": 200,
+      "m_string": "\"results\":[]"
+    },
+    {
+      "id": "citizen4",
+      "name": "Citizen4",
+      "category": "social",
+      "uri_check": "https://soc.citizen4.eu/profile/{account}/profile",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "clozemaster",
+      "name": "Clozemaster",
+      "category": "other",
+      "uri_check": "https://www.clozemaster.com/players/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "clubhouse",
+      "name": "Clubhouse",
+      "category": "social",
+      "uri_check": "https://www.clubhouse.com/@{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "cnet",
+      "name": "CNET",
+      "category": "creator",
+      "uri_check": "https://www.cnet.com/profiles/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "coddy",
+      "name": "Coddy",
+      "category": "dev",
+      "uri_check": "https://coddy.tech/user/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "displayName",
+      "m_code": 200,
+      "m_string": "404 - Page not found"
+    },
+    {
+      "id": "codecademy",
+      "name": "Codecademy",
+      "category": "dev",
+      "uri_check": "https://www.codecademy.com/profiles/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "\"name\":",
+      "m_code": 200,
+      "m_string": "This profile could not be found"
+    },
+    {
+      "id": "codecanyon",
+      "name": "Codecanyon",
+      "category": "dev",
+      "uri_check": "https://codecanyon.net/user/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "codementor",
+      "name": "Codementor",
+      "category": "dev",
+      "uri_check": "https://www.codementor.io/@{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "coders-rank",
+      "name": "Coders Rank",
+      "category": "dev",
+      "uri_check": "https://profile.codersrank.io/user/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 200,
+      "m_string": "not a registered member"
+    },
+    {
+      "id": "coderwall",
+      "name": "Coderwall",
+      "category": "dev",
+      "uri_check": "https://coderwall.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "contently",
+      "name": "Contently",
+      "category": "creator",
+      "uri_check": "https://{account}.contently.com/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "coub",
+      "name": "Coub",
+      "category": "social",
+      "uri_check": "https://coub.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "credly",
+      "name": "Credly",
+      "category": "other",
+      "uri_check": "https://www.credly.com/users/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "crevado",
+      "name": "Crevado",
+      "category": "creator",
+      "uri_check": "https://{account}.crevado.com",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "crowdin",
+      "name": "Crowdin",
+      "category": "dev",
+      "uri_check": "https://crowdin.com/profile/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "cryptohack",
+      "name": "CryptoHack",
+      "category": "dev",
+      "uri_check": "https://cryptohack.org/user/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "property=\"og:title\"",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "ctan",
+      "name": "CTAN",
+      "category": "dev",
+      "uri_check": "https://ctan.org/author/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "dailykos-2",
+      "name": "DailyKos",
+      "category": "creator",
+      "uri_check": "https://www.dailykos.com/user/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "dealabs",
+      "name": "Dealabs",
+      "category": "other",
+      "uri_check": "https://www.dealabs.com/profile/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "deepdreamgenerator",
+      "name": "DeepDreamGenerator",
+      "category": "creator",
+      "uri_check": "https://deepdreamgenerator.com/u/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "designs99",
+      "name": "Designs99",
+      "category": "creator",
+      "uri_check": "https://99designs.com/profiles/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "devrant",
+      "name": "devRant",
+      "category": "dev",
+      "uri_check": "https://devrant.com/users/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "dimensionalme",
+      "name": "DimensionalMe",
+      "category": "social",
+      "uri_check": "https://www.dimensional.me/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "djagi",
+      "name": "Djagi",
+      "category": "gaming",
+      "uri_check": "https://www.djagi.com/cards/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "dojoverse",
+      "name": "Dojoverse",
+      "category": "social",
+      "uri_check": "https://dojoverse.com/members/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "dreamstime",
+      "name": "Dreamstime",
+      "category": "creator",
+      "uri_check": "https://www.dreamstime.com/{account}_info",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "exophase",
+      "name": "exophase",
+      "category": "gaming",
+      "uri_check": "https://www.exophase.com/user/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "faqusha",
+      "name": "Faqusha",
+      "category": "gaming",
+      "uri_check": "https://faqusha.ru/profile/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "fixya",
+      "name": "fixya",
+      "category": "other",
+      "uri_check": "https://www.fixya.com/users/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "flightradar24",
+      "name": "Flightradar24",
+      "category": "other",
+      "uri_check": "https://my.flightradar24.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "football",
+      "name": "Football",
+      "category": "other",
+      "uri_check": "https://www.rusfootball.info/user/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "fragment",
+      "name": "Fragment",
+      "category": "social",
+      "uri_check": "https://fragment.com/username/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "tm-wallet",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "freesound",
+      "name": "Freesound",
+      "category": "music",
+      "uri_check": "https://freesound.org/people/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "gamesradar",
+      "name": "GamesRadar",
+      "category": "creator",
+      "uri_check": "https://www.gamesradar.com/uk/author/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "gentlemint",
+      "name": "Gentlemint",
+      "category": "social",
+      "uri_check": "https://gentlemint.com/users/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "geocaching",
+      "name": "geocaching",
+      "category": "other",
+      "uri_check": "https://www.geocaching.com/p/default.aspx?u={account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "giphy",
+      "name": "Giphy",
+      "category": "creator",
+      "uri_check": "https://giphy.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "\"id\":",
+      "m_code": 301,
+      "m_string": ""
+    },
+    {
+      "id": "gitea",
+      "name": "Gitea",
+      "category": "dev",
+      "uri_check": "https://gitea.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "gitee",
+      "name": "Gitee",
+      "category": "dev",
+      "uri_check": "https://gitee.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "gnome-vcs",
+      "name": "GNOME VCS",
+      "category": "dev",
+      "uri_check": "https://gitlab.gnome.org/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "\"name\":",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "gofundme",
+      "name": "Gofundme",
+      "category": "other",
+      "uri_check": "https://www.gofundme.com/f/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "google-play",
+      "name": "Google Play",
+      "category": "other",
+      "uri_check": "https://play.google.com/store/apps/developer?id={account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "gradle",
+      "name": "Gradle",
+      "category": "dev",
+      "uri_check": "https://plugins.gradle.org/u/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "grailed",
+      "name": "Grailed",
+      "category": "other",
+      "uri_check": "https://www.grailed.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "\"id\":",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "hackaday",
+      "name": "Hackaday",
+      "category": "dev",
+      "uri_check": "https://hackaday.io/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "hackenproof-hackers",
+      "name": "HackenProof (Hackers)",
+      "category": "dev",
+      "uri_check": "https://hackenproof.com/hackers/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "\"name\":",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "hackernoon",
+      "name": "HackerNoon",
+      "category": "creator",
+      "uri_check": "https://us-central1-hackernoon-app.cloudfunctions.net/profilesApi/?handle={account}",
+      "uri_pretty": "https://hackernoon.com/u/{account}",
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "hackerone",
+      "name": "HackerOne",
+      "category": "dev",
+      "uri_check": "https://hackerone.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "hackingwithswift",
+      "name": "HackingWithSwift",
+      "category": "dev",
+      "uri_check": "https://www.hackingwithswift.com/users/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "hackmd",
+      "name": "HackMD",
+      "category": "dev",
+      "uri_check": "https://hackmd.io/@{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "hackster",
+      "name": "hackster",
+      "category": "dev",
+      "uri_check": "https://www.hackster.io/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "hackthissite",
+      "name": "Hackthissite",
+      "category": "dev",
+      "uri_check": "https://www.hackthissite.org/user/view/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 200,
+      "m_string": "Cannot Retrieve Information For The Specified Username"
+    },
+    {
+      "id": "hotukdeals",
+      "name": "HotUKdeals",
+      "category": "other",
+      "uri_check": "https://www.hotukdeals.com/profile/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "hsx",
+      "name": "HSX",
+      "category": "other",
+      "uri_check": "https://www.hsx.com/profile/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "profile-info",
+      "m_code": 200,
+      "m_string": "could not be found"
+    },
+    {
+      "id": "hubpages",
+      "name": "HubPages",
+      "category": "creator",
+      "uri_check": "https://hubpages.com/@{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "hudsonrock",
+      "name": "HudsonRock",
+      "category": "dev",
+      "uri_check": "https://cavalier.hudsonrock.com/api/json/v2/osint-tools/search-by-username?username={account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 200,
+      "m_string": "This username is not associated"
+    },
+    {
+      "id": "ibm-video",
+      "name": "IBM Video",
+      "category": "creator",
+      "uri_check": "https://video.ibm.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "imageshack",
+      "name": "ImageShack",
+      "category": "creator",
+      "uri_check": "https://imageshack.com/user/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "property=\"og:title\"",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "imood",
+      "name": "imood",
+      "category": "creator",
+      "uri_check": "https://www.imood.com/users/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "interpals",
+      "name": "interpals",
+      "category": "social",
+      "uri_check": "https://www.interpals.net/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "intigriti-2",
+      "name": "Intigriti",
+      "category": "dev",
+      "uri_check": "https://app.intigriti.com/profile/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "avatar-container",
+      "m_code": 200,
+      "m_string": "We didn't find what you're looking for"
+    },
+    {
+      "id": "issuu",
+      "name": "Issuu",
+      "category": "creator",
+      "uri_check": "https://issuu.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "itemfix",
+      "name": "Itemfix",
+      "category": "creator",
+      "uri_check": "https://www.itemfix.com/c/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 200,
+      "m_string": "<title>ItemFix - Channel: </title>"
+    },
+    {
+      "id": "jellyfin-weblate",
+      "name": "Jellyfin Weblate",
+      "category": "dev",
+      "uri_check": "https://translate.jellyfin.org/user/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "jetpunk",
+      "name": "Jetpunk",
+      "category": "gaming",
+      "uri_check": "https://www.jetpunk.com/users/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "\"id\":",
+      "m_code": 200,
+      "m_string": "404 File Not Found"
+    },
+    {
+      "id": "jeuxvideo",
+      "name": "jeuxvideo",
+      "category": "gaming",
+      "uri_check": "https://www.jeuxvideo.com/profil/{account}?mode=infos",
+      "uri_pretty": "https://www.jeuxvideo.com/profil/{account}",
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "jigsawplanet",
+      "name": "Jigsawplanet",
+      "category": "gaming",
+      "uri_check": "https://www.jigsawplanet.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "kaskus",
+      "name": "kaskus",
+      "category": "other",
+      "uri_check": "https://www.kaskus.co.id/api/users?username={account}",
+      "uri_pretty": "https://www.kaskus.co.id/@{account}",
+      "e_code": 200,
+      "e_string": "\"id\":",
+      "m_code": 400,
+      "m_string": "user not found"
+    },
+    {
+      "id": "kwork",
+      "name": "kwork",
+      "category": "other",
+      "uri_check": "https://kwork.ru/user/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "laracast",
+      "name": "Laracast",
+      "category": "dev",
+      "uri_check": "https://laracasts.com/@{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "launchpad",
+      "name": "Launchpad",
+      "category": "dev",
+      "uri_check": "https://launchpad.net/~{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "lesswrong",
+      "name": "LessWrong",
+      "category": "creator",
+      "uri_check": "https://www.lesswrong.com/users/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": "",
+      "follow_redirects": true
+    },
+    {
+      "id": "listal",
+      "name": "Listal",
+      "category": "other",
+      "uri_check": "https://{account}.listal.com/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "listed",
+      "name": "Listed",
+      "category": "creator",
+      "uri_check": "https://listed.to/@{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "listography",
+      "name": "Listography",
+      "category": "creator",
+      "uri_check": "https://listography.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 200,
+      "m_string": "No such user."
+    },
+    {
+      "id": "lor",
+      "name": "LOR",
+      "category": "other",
+      "uri_check": "https://www.linux.org.ru/people/{account}/profile",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "lottiefiles",
+      "name": "LottieFiles",
+      "category": "creator",
+      "uri_check": "https://lottiefiles.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "lyricstraining",
+      "name": "lyricsTraining",
+      "category": "music",
+      "uri_check": "https://lyricstraining.com/search?user={account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 200,
+      "m_string": "Sorry, there are no results for your search."
+    },
+    {
+      "id": "lyricstranslate",
+      "name": "LyricsTranslate",
+      "category": "music",
+      "uri_check": "https://lyricstranslate.com/sco/translator/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "manifoldmarkets",
+      "name": "ManifoldMarkets",
+      "category": "other",
+      "uri_check": "https://manifold.markets/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": ">Comments</div>",
+      "m_code": 200,
+      "m_string": "Less than 1% chance anything exists at this url."
+    },
+    {
+      "id": "microsoftlearn",
+      "name": "MicrosoftLearn",
+      "category": "dev",
+      "uri_check": "https://learn.microsoft.com/api/profiles/{account}",
+      "uri_pretty": "https://learn.microsoft.com/en-us/users/{account}",
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "minds-2",
+      "name": "Minds",
+      "category": "social",
+      "uri_check": "https://www.minds.com/api/v1/channel/{account}",
+      "uri_pretty": "https://www.minds.com/{account}",
+      "e_code": 200,
+      "e_string": "\"status\":\"success\"",
+      "m_code": 200,
+      "m_string": "ChannelNotFoundException"
+    },
+    {
+      "id": "mix",
+      "name": "Mix",
+      "category": "creator",
+      "uri_check": "https://mix.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "modx-pro",
+      "name": "Modx_pro",
+      "category": "dev",
+      "uri_check": "https://modx.pro/users/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "mydealz",
+      "name": "Mydealz",
+      "category": "other",
+      "uri_check": "https://www.mydealz.de/profile/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "myspace",
+      "name": "Myspace",
+      "category": "social",
+      "uri_check": "https://myspace.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "n4g",
+      "name": "N4g",
+      "category": "creator",
+      "uri_check": "https://n4g.com/user/home/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "naver",
+      "name": "Naver",
+      "category": "other",
+      "uri_check": "https://blog.naver.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "nhaccuatui",
+      "name": "NhacCuaTui",
+      "category": "music",
+      "uri_check": "https://www.nhaccuatui.com/user/{account}.html",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "Tổng hợp Video clip, Playlist, Bài Hát yêu thích",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "niftygateway",
+      "name": "Niftygateway",
+      "category": "creator",
+      "uri_check": "https://api.niftygateway.com/user/profile-and-offchain-nifties-by-url/?profile_url={account}",
+      "uri_pretty": "https://niftygateway.com/profile/{account}",
+      "e_code": 200,
+      "e_string": "profile_url",
+      "m_code": 400,
+      "m_string": "not_found"
+    },
+    {
+      "id": "nightbot",
+      "name": "Nightbot",
+      "category": "other",
+      "uri_check": "https://api.nightbot.tv/1/channels/t/{account}",
+      "uri_pretty": "https://nightbot.tv/t/{account}/commands",
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "nitrotype",
+      "name": "NitroType",
+      "category": "gaming",
+      "uri_check": "https://www.nitrotype.com/racer/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "\"username\":",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "note",
+      "name": "note",
+      "category": "creator",
+      "uri_check": "https://note.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "ok",
+      "name": "OK",
+      "category": "social",
+      "uri_check": "https://ok.ru/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "opengameart",
+      "name": "OpenGameArt",
+      "category": "creator",
+      "uri_check": "https://opengameart.org/users/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "openi",
+      "name": "OpenI",
+      "category": "dev",
+      "uri_check": "https://openi.pcl.ac.cn/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "opensea",
+      "name": "OpenSea",
+      "category": "creator",
+      "uri_check": "https://opensea.io/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "packagist",
+      "name": "Packagist",
+      "category": "dev",
+      "uri_check": "https://packagist.org/packages/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "paragraph",
+      "name": "Paragraph",
+      "category": "creator",
+      "uri_check": "https://paragraph.com/api/blogs/@{account}",
+      "uri_pretty": "https://paragraph.com/@{account}",
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "pbase",
+      "name": "Pbase",
+      "category": "creator",
+      "uri_check": "https://pbase.com/{account}/profile",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 200,
+      "m_string": "Unknown Artist</title>"
+    },
+    {
+      "id": "pentesterlab",
+      "name": "PentesterLab",
+      "category": "dev",
+      "uri_check": "https://pentesterlab.com/profile/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "pepperpl",
+      "name": "PepperPL",
+      "category": "other",
+      "uri_check": "https://www.pepper.pl/profile/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "periscope",
+      "name": "Periscope",
+      "category": "creator",
+      "uri_check": "https://www.periscope.tv/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "picarto",
+      "name": "Picarto",
+      "category": "creator",
+      "uri_check": "https://ptvintern.picarto.tv/metadescription/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 200,
+      "m_string": "We are the world\\u2019s leading live streaming platform for creative minds. Come join us"
+    },
+    {
+      "id": "pikabu",
+      "name": "pikabu",
+      "category": "social",
+      "uri_check": "https://pikabu.ru/@{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "platzi",
+      "name": "Platzi",
+      "category": "dev",
+      "uri_check": "https://platzi.com/p/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "playstrategy",
+      "name": "Playstrategy",
+      "category": "gaming",
+      "uri_check": "https://playstrategy.org/@/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "plurk",
+      "name": "Plurk",
+      "category": "social",
+      "uri_check": "https://www.plurk.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "\"id\":",
+      "m_code": 200,
+      "m_string": "User Not Found!"
+    },
+    {
+      "id": "pokemon-showdown",
+      "name": "Pokemon Showdown",
+      "category": "gaming",
+      "uri_check": "https://pokemonshowdown.com/users/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "poshmark",
+      "name": "Poshmark",
+      "category": "other",
+      "uri_check": "https://poshmark.com/closet/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "preisjaeger",
+      "name": "Preisjaeger",
+      "category": "other",
+      "uri_check": "https://www.preisjaeger.at/profile/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "proglib",
+      "name": "Proglib",
+      "category": "dev",
+      "uri_check": "https://proglib.io/u/{account}/posts",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "promodescuentos",
+      "name": "Promodescuentos",
+      "category": "other",
+      "uri_check": "https://www.promodescuentos.com/profile/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "pychess",
+      "name": "Pychess",
+      "category": "gaming",
+      "uri_check": "https://www.pychess.org/@/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "radiomed",
+      "name": "Radiomed",
+      "category": "music",
+      "uri_check": "https://radiomed.ru/users/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "property=\"og:title\"",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "rarible",
+      "name": "Rarible",
+      "category": "other",
+      "uri_check": "https://rarible.com/marketplace/api/v4/urls/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "\"id\":",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "realmeye",
+      "name": "Realmeye",
+      "category": "gaming",
+      "uri_check": "https://www.realmeye.com/player/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 200,
+      "m_string": "Sorry, but we either:"
+    },
+    {
+      "id": "ruby-china",
+      "name": "Ruby China",
+      "category": "dev",
+      "uri_check": "https://ruby-china.org/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "runescape",
+      "name": "RuneScape",
+      "category": "gaming",
+      "uri_check": "https://apps.runescape.com/runemetrics/profile/profile?user={account}",
+      "uri_pretty": "https://apps.runescape.com/runemetrics/app/overview/player/{account}",
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 200,
+      "m_string": "{\"error\":\"NO_PROFILE\",\"loggedIn\":\"false\"}"
+    },
+    {
+      "id": "runitonce",
+      "name": "Runitonce",
+      "category": "gaming",
+      "uri_check": "https://www.runitonce.com/users/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "schemecolor",
+      "name": "SchemeColor",
+      "category": "creator",
+      "uri_check": "https://www.schemecolor.com/author/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "setlist",
+      "name": "Setlist",
+      "category": "music",
+      "uri_check": "https://www.setlist.fm/user/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "shazoo",
+      "name": "Shazoo",
+      "category": "gaming",
+      "uri_check": "https://shazoo.ru/users/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "shelf",
+      "name": "Shelf",
+      "category": "other",
+      "uri_check": "https://www.shelf.im/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 200,
+      "m_string": "Not Found"
+    },
+    {
+      "id": "slides",
+      "name": "Slides",
+      "category": "creator",
+      "uri_check": "https://slides.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "smugmug",
+      "name": "SmugMug",
+      "category": "creator",
+      "uri_check": "https://{account}.smugmug.com",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "sociallibremone",
+      "name": "SocialLibremOne",
+      "category": "social",
+      "uri_check": "https://social.librem.one/@{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "soop",
+      "name": "SOOP",
+      "category": "creator",
+      "uri_check": "https://api-channel.sooplive.co.kr/v1.1/channel/{account}/station",
+      "uri_pretty": "https://www.sooplive.co.kr/station/{account}",
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "soundgym",
+      "name": "Soundgym",
+      "category": "music",
+      "uri_check": "https://www.soundgym.co/member/profile?m={account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "property=\"og:title\"",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "soup",
+      "name": "Soup",
+      "category": "creator",
+      "uri_check": "https://www.soup.io/author/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "\"name\":",
+      "m_code": 301,
+      "m_string": ""
+    },
+    {
+      "id": "sourceforge-2",
+      "name": "SourceForge",
+      "category": "dev",
+      "uri_check": "https://sourceforge.net/u/{account}/profile",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "soylentnews",
+      "name": "SoylentNews",
+      "category": "creator",
+      "uri_check": "https://soylentnews.org/~{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 200,
+      "m_string": "The user you requested does not exist, no matter how much you wish this might be the case."
+    },
+    {
+      "id": "spatial",
+      "name": "Spatial",
+      "category": "gaming",
+      "uri_check": "https://www.spatial.io/@{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "speakerdeck",
+      "name": "SpeakerDeck",
+      "category": "creator",
+      "uri_check": "https://speakerdeck.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "spletnik",
+      "name": "spletnik",
+      "category": "creator",
+      "uri_check": "https://spletnik.ru/user/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "status-cafe",
+      "name": "Status Cafe",
+      "category": "other",
+      "uri_check": "https://status.cafe/users/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "steemit",
+      "name": "Steemit",
+      "category": "social",
+      "uri_check": "https://steemit.com/@{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "stereo",
+      "name": "Stereo",
+      "category": "music",
+      "uri_check": "https://stereo.ru/users/@{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "strava",
+      "name": "Strava",
+      "category": "other",
+      "uri_check": "https://www.strava.com/athletes/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "studygolang",
+      "name": "StudyGolang",
+      "category": "dev",
+      "uri_check": "https://studygolang.com/user/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "的个人首页",
+      "m_code": 303,
+      "m_string": ""
+    },
+    {
+      "id": "taplink",
+      "name": "Taplink",
+      "category": "creator",
+      "uri_check": "https://taplink.cc/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "at Taplink",
+      "m_code": 301,
+      "m_string": ""
+    },
+    {
+      "id": "tenor",
+      "name": "Tenor",
+      "category": "creator",
+      "uri_check": "https://tenor.com/users/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "themeforest",
+      "name": "ThemeForest",
+      "category": "creator",
+      "uri_check": "https://themeforest.net/user/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "themoviedb",
+      "name": "TheMovieDB",
+      "category": "creator",
+      "uri_check": "https://www.themoviedb.org/u/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "theodysseyonline",
+      "name": "TheOdysseyOnline",
+      "category": "creator",
+      "uri_check": "https://www.theodysseyonline.com/user/@{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "thesimsresource",
+      "name": "TheSimsResource",
+      "category": "gaming",
+      "uri_check": "https://www.thesimsresource.com/members/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "class=\"profile-avatar\"",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "tiendanube",
+      "name": "Tiendanube",
+      "category": "other",
+      "uri_check": "https://{account}.mitiendanube.com/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "tistory",
+      "name": "tistory",
+      "category": "creator",
+      "uri_check": "https://{account}.tistory.com/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "topmate",
+      "name": "Topmate",
+      "category": "other",
+      "uri_check": "https://topmate.io/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "toster-2",
+      "name": "Toster",
+      "category": "dev",
+      "uri_check": "https://qna.habr.com/user/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "touristlink",
+      "name": "Touristlink",
+      "category": "social",
+      "uri_check": "https://www.touristlink.com/user/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "property=\"og:title\"",
+      "m_code": 301,
+      "m_string": ""
+    },
+    {
+      "id": "traktrain",
+      "name": "TRAKTRAIN",
+      "category": "music",
+      "uri_check": "https://traktrain.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "trawelling",
+      "name": "Trawelling",
+      "category": "other",
+      "uri_check": "https://traewelling.de/@{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "tripline",
+      "name": "Tripline",
+      "category": "social",
+      "uri_check": "https://www.tripline.net/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "truesteamachievements",
+      "name": "Truesteamachievements",
+      "category": "gaming",
+      "uri_check": "https://truesteamachievements.com/gamer/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "tunefind",
+      "name": "Tunefind",
+      "category": "music",
+      "uri_check": "https://www.tunefind.com/user/profile/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "twitcasting",
+      "name": "Twitcasting",
+      "category": "creator",
+      "uri_check": "https://twitcasting.tv/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "property=\"og:title\"",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "typeracer",
+      "name": "Typeracer",
+      "category": "gaming",
+      "uri_check": "https://data.typeracer.com/pit/profile?user={account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "property=\"og:title\"",
+      "m_code": 200,
+      "m_string": "Profile Not Found"
+    },
+    {
+      "id": "untappd",
+      "name": "Untappd",
+      "category": "other",
+      "uri_check": "https://untappd.com/user/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "velog",
+      "name": "Velog",
+      "category": "creator",
+      "uri_check": "https://velog.io/@{account}/posts",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "vero",
+      "name": "Vero",
+      "category": "social",
+      "uri_check": "https://vero.co/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "vgtimes",
+      "name": "Vgtimes",
+      "category": "creator",
+      "uri_check": "https://vgtimes.ru/user/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "videohive",
+      "name": "VideoHive",
+      "category": "creator",
+      "uri_check": "https://videohive.net/user/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "vine",
+      "name": "Vine",
+      "category": "social",
+      "uri_check": "https://vine.co/api/users/profiles/vanity/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "virustotal",
+      "name": "VirusTotal",
+      "category": "dev",
+      "uri_check": "https://www.virustotal.com/ui/users/{account}/avatar",
+      "uri_pretty": "https://www.virustotal.com/gui/user/{account}",
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "vivino",
+      "name": "Vivino",
+      "category": "other",
+      "uri_check": "https://api.vivino.com/users/{account}",
+      "uri_pretty": "https://www.vivino.com/users/{account}",
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "vjudge",
+      "name": "Vjudge",
+      "category": "dev",
+      "uri_check": "https://VJudge.net/user/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "vk",
+      "name": "VK",
+      "category": "social",
+      "uri_check": "https://vk.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "\"id\":",
+      "m_code": 404,
+      "m_string": "",
+      "follow_redirects": true
+    },
+    {
+      "id": "vlr",
+      "name": "VLR",
+      "category": "gaming",
+      "uri_check": "https://www.vlr.gg/user/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "w3challs",
+      "name": "W3challs",
+      "category": "dev",
+      "uri_check": "https://w3challs.com/profile/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 200,
+      "m_string": "<title>404 Page not found – W3Challs Hacking Challenges</title>"
+    },
+    {
+      "id": "w3schools",
+      "name": "W3Schools",
+      "category": "dev",
+      "uri_check": "https://pathfinder-api.kai.w3spaces.com/public-profile-api/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "warframe-market",
+      "name": "Warframe Market",
+      "category": "gaming",
+      "uri_check": "https://api.warframe.market/v2/user/{account}",
+      "uri_pretty": "https://warframe.market/profile/{account}",
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "warpcast",
+      "name": "Warpcast",
+      "category": "social",
+      "uri_check": "https://client.warpcast.com/v2/user-by-username?username={account}",
+      "uri_pretty": "https://warpcast.com/{account}",
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "weasyl",
+      "name": "Weasyl",
+      "category": "creator",
+      "uri_check": "https://www.weasyl.com/~{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "weblate",
+      "name": "Weblate",
+      "category": "dev",
+      "uri_check": "https://hosted.weblate.org/user/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "webnode",
+      "name": "WebNode",
+      "category": "creator",
+      "uri_check": "https://{account}.webnode.cz/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "weebly",
+      "name": "Weebly",
+      "category": "creator",
+      "uri_check": "https://{account}.weebly.com/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "wimkinpublicprofile",
+      "name": "WimkinPublicProfile",
+      "category": "social",
+      "uri_check": "https://wimkin.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "wishlistr",
+      "name": "Wishlistr",
+      "category": "social",
+      "uri_check": "https://www.wishlistr.com/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "wordpressorg",
+      "name": "WordPressOrg",
+      "category": "dev",
+      "uri_check": "https://profiles.wordpress.org/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "wordpresssupport",
+      "name": "WordpressSupport",
+      "category": "creator",
+      "uri_check": "https://wordpress.org/support/users/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "xanga",
+      "name": "Xanga",
+      "category": "social",
+      "uri_check": "https://{account}.xanga.com/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "s Xanga Site | Just",
+      "m_code": 302,
+      "m_string": ""
+    },
+    {
+      "id": "younow",
+      "name": "YouNow",
+      "category": "creator",
+      "uri_check": "https://api.younow.com/php/api/broadcast/info/user={account}/",
+      "uri_pretty": "https://www.younow.com/{account}/",
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 200,
+      "m_string": "No users found"
+    },
+    {
+      "id": "youpic",
+      "name": "YouPic",
+      "category": "creator",
+      "uri_check": "https://youpic.com/photographer/{account}/",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "yuque",
+      "name": "Yuque",
+      "category": "dev",
+      "uri_check": "https://www.yuque.com/{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
+    },
+    {
+      "id": "zora",
+      "name": "Zora",
+      "category": "social",
+      "uri_check": "https://zora.co/@{account}",
+      "uri_pretty": null,
+      "e_code": 200,
+      "e_string": "",
+      "m_code": 404,
+      "m_string": ""
     }
   ]
 }

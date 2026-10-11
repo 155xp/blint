@@ -37,7 +37,7 @@ func TestClassify(t *testing.T) {
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			if got := classify(tc.site, tc.code, tc.body); got != tc.want {
+			if got := classify(tc.site, tc.code, tc.body, ""); got != tc.want {
 				t.Fatalf("got %s want %s", got, tc.want)
 			}
 		})
@@ -45,13 +45,52 @@ func TestClassify(t *testing.T) {
 }
 
 func TestCatalogMarkers(t *testing.T) {
-	for _, site := range loadSites() {
-		if site.MCode == 0 && site.MAltCode == nil {
+	sites := loadSites()
+	if len(sites) != 281 {
+		t.Fatalf("catalog has %d sites", len(sites))
+	}
+	known := map[string]bool{"social": true, "gaming": true, "dev": true, "music": true, "creator": true, "other": true}
+	redirects := 0
+	for _, site := range sites {
+		if !known[site.Category] {
+			t.Errorf("%s category %q", site.ID, site.Category)
+		}
+		if site.MCode == 0 && site.MAltCode == nil && site.MRedirect == "" {
 			t.Errorf("%s has no not-found marker", site.ID)
+		}
+		if site.MRedirect != "" {
+			redirects++
 		}
 		if !strings.HasPrefix(site.URICheck, "https://") {
 			t.Errorf("%s is not https", site.ID)
 		}
+	}
+	if redirects == 0 {
+		t.Fatal("expected a redirect marker")
+	}
+}
+
+func TestRedirectAndSoftMiss(t *testing.T) {
+	soft := Site{ECode: 200, EString: "", MCode: 200, MString: "User not found"}
+	if classify(soft, 200, "<html>User not found</html>", "") != "not_found" {
+		t.Fatal("empty found marker must lose to the missing phrase")
+	}
+	if classify(soft, 200, "<html>profile</html>", "") != "found" {
+		t.Fatal("expected found")
+	}
+	wall := Site{ECode: 200, EString: "", MCode: 302, MString: ""}
+	if classify(wall, 302, "<title>Just a moment...</title>", "") != "error" {
+		t.Fatal("challenge redirect is not a miss")
+	}
+	site := Site{ECode: 302, EString: "", MCode: 404, MString: "not-used", MRedirect: "https://example.com/missing"}
+	if classify(site, 302, "", "https://example.com/missing/") != "not_found" {
+		t.Fatal("redirect target should be a miss")
+	}
+	if classify(site, 302, "", "https://example.com/users/sample") != "found" {
+		t.Fatal("other redirect should stay found")
+	}
+	if redirectKey("https://example.com/missing/") != "https://example.com/missing" {
+		t.Fatal("redirect key")
 	}
 }
 
@@ -72,6 +111,9 @@ func TestCheck(t *testing.T) {
 	mux.HandleFunc("/go", func(w http.ResponseWriter, r *http.Request) {
 		hops++
 		http.Redirect(w, r, "/landed", http.StatusFound)
+	})
+	mux.HandleFunc("/away", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/gone", http.StatusFound)
 	})
 	mux.HandleFunc("/landed", func(w http.ResponseWriter, r *http.Request) {
 		hops++
@@ -98,6 +140,10 @@ func TestCheck(t *testing.T) {
 	hop := Site{URICheck: srv.URL + "/go", ECode: 200, EString: `"id":`, MCode: 404, MString: "missing", MAltCode: &redir, MAltString: &empty}
 	if got := check(context.Background(), client, hop, "ada"); got.Status != "not_found" || hops != 1 {
 		t.Fatalf("%+v hops %d", got, hops)
+	}
+	marker := Site{URICheck: srv.URL + "/away", ECode: 302, EString: "", MCode: 404, MString: "not-used", MRedirect: srv.URL + "/gone"}
+	if got := check(context.Background(), client, marker, "ada"); got.Status != "not_found" {
+		t.Fatalf("redirect marker %+v", got)
 	}
 	pretty := srv.URL + "/u/{account}"
 	post := Site{

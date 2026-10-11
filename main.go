@@ -10,8 +10,10 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -23,7 +25,7 @@ import (
 var sitesJSON []byte
 
 const (
-	workers   = 24
+	workers   = 48
 	reqLimit  = 3500 * time.Millisecond
 	userAgent = "blint/0.1 (public profile check; +https://github.com/155xp/blint)"
 )
@@ -42,6 +44,7 @@ type Site struct {
 	MString         string            `json:"m_string"`
 	MAltCode        *int              `json:"m_alt_code,omitempty"`
 	MAltString      *string           `json:"m_alt_string,omitempty"`
+	MRedirect       string            `json:"m_redirect,omitempty"`
 	StripBadChar    string            `json:"strip_bad_char,omitempty"`
 	FollowRedirects bool              `json:"follow_redirects,omitempty"`
 	Method          string            `json:"method,omitempty"`
@@ -218,12 +221,18 @@ func scan(ctx context.Context, client *http.Client, sites []Site, user string, v
 		if v.all || res.Status == "found" {
 			rep.Results = append(rep.Results, res)
 		}
-		v.emit(p, res)
+		if !v.asJSON && !v.tty && res.Status == "found" {
+			fmt.Println(res.URL)
+		}
 		p.draw(v)
 	}
 	p.clear()
 	rep.MS = time.Since(start).Milliseconds()
 	if v.live() {
+		if v.multi {
+			fmt.Println(v.gray.Render(user))
+		}
+		v.printGrouped(rep.Results)
 		fmt.Println(v.summary(rep, user))
 	}
 	return rep
@@ -299,7 +308,7 @@ func check(ctx context.Context, client *http.Client, site Site, username string)
 	code := resp.StatusCode
 	res.StatusCode = &code
 	page := string(buf)
-	res.Status = classify(site, code, page)
+	res.Status = classify(site, code, page, resolveLocation(checkURL, resp.Header.Get("Location")))
 	if res.Status == "error" {
 		res.Error = "unclear"
 		if code == 429 {
@@ -311,22 +320,68 @@ func check(ctx context.Context, client *http.Client, site Site, username string)
 	return res
 }
 
-func classify(site Site, code int, body string) string {
-	if !challenged(code, body) && code == site.ECode && has(body, site.EString) {
+func classify(site Site, code int, body, location string) string {
+	if redirectMiss(site, code, location) && !challenged(code, body) {
+		return "not_found"
+	}
+	if !challenged(code, body) && code == site.ECode && has(body, site.EString) && (site.EString != "" || !explicitMiss(site, code, body)) {
 		return "found"
 	}
-	alt := false
-	if site.MAltCode != nil && code == *site.MAltCode {
-		needle := ""
-		if site.MAltString != nil {
-			needle = *site.MAltString
-		}
-		alt = has(body, needle)
-	}
-	if code == 410 || (code == site.MCode && has(body, site.MString)) || alt {
+	if code == 410 || textMiss(site, code, body) {
 		return "not_found"
 	}
 	return "error"
+}
+
+func explicitMiss(site Site, code int, body string) bool {
+	if site.MString != "" && code == site.MCode && has(body, site.MString) {
+		return true
+	}
+	return site.MAltCode != nil && site.MAltString != nil && *site.MAltString != "" && code == *site.MAltCode && has(body, *site.MAltString)
+}
+
+func textMiss(site Site, code int, body string) bool {
+	if code == site.MCode && has(body, site.MString) && !(site.MString == "" && challenged(code, body)) {
+		return true
+	}
+	if site.MAltCode == nil || code != *site.MAltCode {
+		return false
+	}
+	needle := ""
+	if site.MAltString != nil {
+		needle = *site.MAltString
+	}
+	return has(body, needle) && !(needle == "" && challenged(code, body))
+}
+
+func redirectMiss(site Site, code int, location string) bool {
+	if site.MRedirect == "" || location == "" || code < 300 || code >= 400 {
+		return false
+	}
+	return redirectKey(location) == redirectKey(site.MRedirect)
+}
+
+func redirectKey(raw string) string {
+	u, err := url.Parse(raw)
+	if err != nil || u.Host == "" {
+		return strings.TrimRight(raw, "/")
+	}
+	return u.Scheme + "://" + u.Host + strings.TrimRight(u.Path, "/")
+}
+
+func resolveLocation(base, loc string) string {
+	if loc == "" {
+		return ""
+	}
+	b, err := url.Parse(base)
+	if err != nil {
+		return loc
+	}
+	ref, err := url.Parse(loc)
+	if err != nil {
+		return ""
+	}
+	return b.ResolveReference(ref).String()
 }
 
 func has(body, needle string) bool {
@@ -375,18 +430,73 @@ func newView(tty, all, asJSON bool, sites []Site, multi bool) *view {
 
 func (v *view) live() bool { return v.tty && !v.asJSON }
 
-func (v *view) emit(p *progress, res Result) {
-	if v.asJSON || (res.Status != "found" && !v.all) {
-		return
-	}
-	if !v.tty {
+func (v *view) printGrouped(results []Result) {
+	var found, rest []Result
+	for _, res := range results {
 		if res.Status == "found" {
-			fmt.Println(res.URL)
+			found = append(found, res)
+		} else {
+			rest = append(rest, res)
 		}
-		return
 	}
-	p.clear()
-	fmt.Println(v.row(res))
+	sort.Slice(found, func(i, j int) bool {
+		if categoryRank(found[i].Category) != categoryRank(found[j].Category) {
+			return categoryRank(found[i].Category) < categoryRank(found[j].Category)
+		}
+		return found[i].Name < found[j].Name
+	})
+	last := ""
+	for _, res := range found {
+		label := categoryLabel(res.Category)
+		if label != last {
+			if last != "" {
+				fmt.Println()
+			}
+			fmt.Println(v.gray.Render(label))
+			last = label
+		}
+		fmt.Println(v.row(res))
+	}
+	if len(found) > 0 && len(rest) > 0 {
+		fmt.Println()
+	}
+	for _, res := range rest {
+		fmt.Println(v.row(res))
+	}
+}
+
+func categoryRank(category string) int {
+	switch category {
+	case "social":
+		return 0
+	case "gaming":
+		return 1
+	case "dev":
+		return 2
+	case "music":
+		return 3
+	case "creator":
+		return 4
+	default:
+		return 5
+	}
+}
+
+func categoryLabel(category string) string {
+	switch category {
+	case "social":
+		return "Social"
+	case "gaming":
+		return "Gaming"
+	case "dev":
+		return "Dev"
+	case "music":
+		return "Music"
+	case "creator":
+		return "Creator"
+	default:
+		return "Other"
+	}
 }
 
 func (v *view) row(res Result) string {
