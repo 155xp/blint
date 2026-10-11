@@ -15,7 +15,7 @@ blint --json octocat
 
 Found profiles print as each site answers. Not-found rows stay hidden unless `-a`. `--json` prints a JSON array with counts and the same rows.
 
-On a terminal, one progress line stays at the bottom:
+On a terminal, hits show a green mark and a bold name, URLs are faint, misses are gray, errors are yellow, and a gray progress line stays at the bottom:
 
 ```
 checking 80 sites · 41 left

@@ -71,8 +71,9 @@ type report struct {
 
 type view struct {
 	tty, all, asJSON, multi bool
-	name, status, url       lipgloss.Style
-	dim, bad, muted         lipgloss.Style
+	nameW                   int
+	hit, name, url          lipgloss.Style
+	miss, err, gray         lipgloss.Style
 }
 
 func main() { os.Exit(run(os.Args[1:])) }
@@ -223,15 +224,7 @@ func scan(ctx context.Context, client *http.Client, sites []Site, user string, v
 	p.clear()
 	rep.MS = time.Since(start).Milliseconds()
 	if v.live() {
-		errWord := "errors"
-		if rep.Errors == 1 {
-			errWord = "error"
-		}
-		line := fmt.Sprintf("%d found · %d not found · %d %s · %s", rep.Found, rep.NotFound, rep.Errors, errWord, fmtDur(rep.MS))
-		if v.multi {
-			line = user + " · " + line
-		}
-		fmt.Println(v.muted.Render(line))
+		fmt.Println(v.summary(rep, user))
 	}
 	return rep
 }
@@ -370,9 +363,13 @@ func newView(tty, all, asJSON bool, sites []Site, multi bool) *view {
 			width = n
 		}
 	}
-	fg := func(c string) lipgloss.Style { return lipgloss.NewStyle().Foreground(lipgloss.Color(c)) }
-	v.name, v.status = fg("245").Width(width), fg("243").Width(10)
-	v.url, v.dim, v.bad, v.muted = fg("252"), fg("240"), fg("167"), fg("245")
+	v.nameW = width
+	v.hit = lipgloss.NewStyle().Foreground(lipgloss.Color("2"))
+	v.name = lipgloss.NewStyle().Bold(true).Width(width)
+	v.url = lipgloss.NewStyle().Faint(true)
+	v.miss = lipgloss.NewStyle().Foreground(lipgloss.Color("8")).Faint(true)
+	v.err = lipgloss.NewStyle().Foreground(lipgloss.Color("3"))
+	v.gray = lipgloss.NewStyle().Foreground(lipgloss.Color("8"))
 	return v
 }
 
@@ -389,21 +386,37 @@ func (v *view) emit(p *progress, res Result) {
 		return
 	}
 	p.clear()
-	name := v.name.Render(res.Name)
-	if !v.all {
-		fmt.Println(name + "  " + v.url.Render(res.URL))
-		return
+	fmt.Println(v.row(res))
+}
+
+func (v *view) row(res Result) string {
+	if res.Status == "found" {
+		return v.hit.Render("✓") + " " + v.name.Render(res.Name) + "  " + v.url.Render(res.URL)
 	}
-	label, detail, style := "found", res.URL, v.url
-	switch res.Status {
-	case "not_found":
-		label, detail, style = "not found", "", v.dim
-	default:
-		if res.Status != "found" {
-			label, detail, style = "error", res.Error, v.bad
-		}
+	if res.Status == "not_found" {
+		return v.miss.Render("-") + " " + v.miss.Width(v.nameW).Render(res.Name) + "  " + v.miss.Render("not found")
 	}
-	fmt.Println(name + "  " + v.status.Render(label) + "  " + style.Render(detail))
+	label := res.Error
+	if label == "" {
+		label = "error"
+	}
+	return v.err.Render("!") + " " + v.err.Width(v.nameW).Render(res.Name) + "  " + v.err.Render(label)
+}
+
+func (v *view) summary(rep report, user string) string {
+	errWord := "errors"
+	if rep.Errors == 1 {
+		errWord = "error"
+	}
+	sep := v.gray.Render(" · ")
+	line := v.hit.Render(fmt.Sprintf("%d found", rep.Found)) + sep +
+		v.miss.Render(fmt.Sprintf("%d not found", rep.NotFound)) + sep +
+		v.err.Render(fmt.Sprintf("%d %s", rep.Errors, errWord)) + sep +
+		v.gray.Render(fmtDur(rep.MS))
+	if v.multi {
+		return v.gray.Render(user+" · ") + line
+	}
+	return line
 }
 
 type progress struct {
@@ -420,7 +433,7 @@ func (p *progress) draw(v *view) {
 	if p.label != "" {
 		msg = p.label + " · " + msg
 	}
-	fmt.Fprint(os.Stdout, "\r\033[2K"+v.muted.Render(msg))
+	fmt.Fprint(os.Stdout, "\r\033[2K"+v.gray.Render(msg))
 	p.on = true
 }
 
